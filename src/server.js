@@ -27,8 +27,3 @@ console.info("SERVER ON PORT "+PORT)
 app.use("/companies", companiesRoutes)
 
 app.use("/contacts", contactsRoutes)
-
-
-app.get('/', (req, res) => {
-  res.send('¡API Express funcionando correctamente!');
-});
