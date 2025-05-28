@@ -7,6 +7,7 @@ A simple web service that migrates data from the Rick and Morty API to HubSpot C
 ## Installation
 
 1. You must have 2 Hubspot Accounts (one for origin and one for mirror), in contacts sections you add the next properties:
+
 | **Property Name**      | **Internal Name**     | **Type**            | **Values**                        |
 |------------------------|------------------------|---------------------|-----------------------------------|
 | Character ID           | character_id           | Single Line Text    | N/A                               |
