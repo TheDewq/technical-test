@@ -5,6 +5,7 @@ import { OriginHubspot } from "../../../utils/OriginHubspot.js"
 export class RickAndMorty{
     static async Migrate(req, res){
         try {
+            res.sendStatus(201)
             console.log("Begin migration")
             await RickAndMorty.MigrateLocations(req, res)
             await RickAndMorty.MigrateContacts(req, res)

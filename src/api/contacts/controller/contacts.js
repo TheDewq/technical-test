@@ -137,7 +137,7 @@ export class Contacts{
             }
     }
 
-    static async modifyAssociation(ContactId, TargetContactId = null, discard=false){
+    static async modifyAssociation(ContactId, TargetContactId = null){
         console.log("Making association")
         //parametters verification
         try {
