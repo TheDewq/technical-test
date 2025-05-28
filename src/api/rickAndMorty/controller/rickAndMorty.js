@@ -59,7 +59,7 @@ export class RickAndMorty{
             const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
             for(let i = 1; i <= count; i++){
-                await sleep(1000)
+                await sleep(1050)
                 console.log("item ", i)
                 const responseItem = await OriginHubspot.createLocation(formatedData[i-1])
                 if(responseItem == i){
@@ -125,7 +125,7 @@ export class RickAndMorty{
             const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
             for(let i = 1; i <= count; i++){
-                await sleep(1000)
+                await sleep(1050)
                 if(RickAndMorty.isPrimeNumber(parseInt(formatedData[i-1].properties.character_id))){
                     console.log("contact "+i+" is "+formatedData[i-1].properties.firstname)
                     const location_id = await OriginHubspot.searchLocation("name", formatedData[i-1].location)
