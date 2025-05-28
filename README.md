@@ -19,6 +19,7 @@ A simple web service that migrates data from the Rick and Morty API to HubSpot C
 
 
 then, you must add the next properties in Company section:
+
 | Property Name    | Internal Name   | Type              | Values |
 |------------------|-----------------|-------------------|--------|
 | Location ID      | location_id     | Single Line Text  | N/A    |
@@ -28,6 +29,7 @@ then, you must add the next properties in Company section:
 | Creation Date    | creation_date   | Date Picker       | N/A    |
 
 2. go to settings > Integrations > private apps and create 4 private apps with next schema:
+   
 | Operation       | Required Permissions                                      | Event Type                |
 |-----------------|----------------------------------------------------------|---------------------------|
 | Contact Create  | crm.objects.contacts.read crm.objects.contacts.write     | contact.creation          |
