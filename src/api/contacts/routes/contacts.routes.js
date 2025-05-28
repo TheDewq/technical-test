@@ -1,7 +1,8 @@
 import express from "express";
+import { Contacts } from "../controller/contacts.js";
 
 const router = express.Router();
 
-router.post("/", ()=>console.log("contacts xD"));
+router.post("/", Contacts.migrate);
 
 export default router;

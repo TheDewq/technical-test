@@ -28,8 +28,9 @@ export class Companies {
   static async create(objId) {
     try {
         console.log("Creating company")
+
         //retrieve company information from origin
-        const originHubspotClient = new hubspot.Client({"accessToken":KEYS.ORIGIN.CREATE});
+        const originHubspotClient = new hubspot.Client({"accessToken":KEYS.ORIGIN.COMPANIES.CREATE});
 
         //company properties
         const companyId = objId;
@@ -68,7 +69,7 @@ export class Companies {
             console.log("Updating company")
 
             //find location ID of company
-            const originHubspotClient = new hubspot.Client({"accessToken":KEYS.ORIGIN.UPDATE});
+            const originHubspotClient = new hubspot.Client({"accessToken":KEYS.ORIGIN.COMPANIES.UPDATE});
 
             //company properties
             const allProperties = ["location_id"];

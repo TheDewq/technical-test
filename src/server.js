@@ -8,10 +8,13 @@ import { PORT } from "./utils/constants.js"
 import companiesRoutes from "./api/companies/routes/companies.routes.js"
 import contactsRoutes from "./api/contacts/routes/contacts.routes.js"
 import cors from "cors"
+import dotenv from 'dotenv';
+
 
 //initialize app
 
 const app = express()
+dotenv.config();
 
 //middlewares
 app.use(express.json())
