@@ -3,15 +3,15 @@ import hubspot from "@hubspot/api-client"
 
 export class Contacts{
     static migrate(req, res) {
-    
-    res.sendStatus(204)
 
     const data = req.body[0];
 
     // verify if body isn't empty
     if (data == null) return res.status(400).json({ message: "missing data" });
 
-    console.log("Request type", data);
+    res.sendStatus(204)
+
+    console.log("Request type", data.subscriptionType);
 
     // Determine the subscription type to execute the corresponding function
     if (data.subscriptionType == "contact.creation") {
@@ -63,19 +63,13 @@ export class Contacts{
             
             const apiResponse2 = await targetHubspotClient.crm.contacts.basicApi.create(SimplePublicObjectInputForCreate);
 
-            console.log("response from target", apiResponse2)
+            //console.log("response from target", apiResponse2)
     
             console.log("Contact successfully migrated")
 
-            //establish association between contact and company
-
-
-           
-
             //make association
             Contacts.modifyAssociation(objId, apiResponse2.id)
-            
-            
+
             
             return
             
@@ -153,7 +147,7 @@ export class Contacts{
         const originHubspotClient = new hubspot.Client({"accessToken":KEYS.ORIGIN.CONTACTS.CREATE})
         
         //step 1: get origin contact data
-        console.log("step 1")
+        //console.log("step 1")
 
         const associations = ["companies"]
 
@@ -161,7 +155,7 @@ export class Contacts{
 
 
          //step 2: get company id in target
-         console.log("step 2")
+         //console.log("step 2")
          if (!apiResponse.associations?.companies?.results?.length) {
                 throw new Error("No associated company found for the contact");
             }
@@ -169,7 +163,7 @@ export class Contacts{
         const origin_company_id = apiResponse.associations.companies.results[0].id
 
         //step 3: get origin company data
-        console.log("step 3")
+        //console.log("step 3")
 
         const companyHubspotClient = new hubspot.Client({"accessToken": KEYS.ORIGIN.COMPANIES.UPDATE})
 
@@ -179,7 +173,7 @@ export class Contacts{
 
 
         // step 4: find id of company from target
-        console.log("step 4")
+        //console.log("step 4")
 
         const targetHubspotClient = new hubspot.Client({"accessToken": KEYS.TARGET})
 
@@ -199,13 +193,13 @@ export class Contacts{
 
         
         //step 5: find target company id (real id)
-        console.log("step 5")
+        //console.log("step 5")
         const response2 = await targetHubspotClient.crm.companies.searchApi.doSearch(PublicObjectSearchRequest)
 
         const TargetCompanyId = response2.results[0].id
 
         //step 6: if targetContactId == null, find targetContactId in target
-        console.log("step 6")
+        //console.log("step 6")
         let finalTargetContactId = TargetContactId
 
         if(finalTargetContactId == null){
@@ -233,7 +227,7 @@ export class Contacts{
 
         //step 7: make association
         // contact is "from" and company is "to"
-        console.log("step 7")
+        //console.log("step 7")
 
         const fromObjectType = "0-1"
         const toObjectType = "0-2"
@@ -264,14 +258,14 @@ export class Contacts{
             const companyResponse = await originCompanyHubspot.crm.companies.basicApi.getById(originCompanyId,["location_id"])
             const TargetCompanyId = companyResponse.properties.location_id
 
-            console.log("step 1 ", TargetCompanyId)
+            //console.log("step 1 ", TargetCompanyId)
 
             //step 2: get origin contact id (character_id)
             const originContactHubspot = new hubspot.Client({"accessToken":KEYS.ORIGIN.CONTACTS.UPDATE})
             const contactResponse = await originContactHubspot.crm.contacts.basicApi.getById(originContactId,["character_id"])
             const TargetContactId = contactResponse.properties.character_id
 
-            console.log("step 2", TargetContactId)
+            //console.log("step 2", TargetContactId)
 
             //step 3: find company id (real id) in target
             const targetHubspot = new hubspot.Client({"accessToken":KEYS.TARGET})
@@ -291,7 +285,7 @@ export class Contacts{
             };
             const responseFoundCompany = await targetHubspot.crm.companies.searchApi.doSearch(companyParameters);
             const TargetCompanyData = responseFoundCompany.results[0].id
-            console.log("step 3", TargetCompanyData)
+            //console.log("step 3", TargetCompanyData)
 
             //step 4: find contact id (real id) in target
 
@@ -311,7 +305,7 @@ export class Contacts{
 
             const responseFoundContact = await targetHubspot.crm.contacts.searchApi.doSearch(contactParameters);
             const TargetContactData = responseFoundContact.results[0].id
-            console.log("step 4", TargetContactData)
+            //console.log("step 4", TargetContactData)
 
             //step 5: archive association in target
             const batchInput = {
@@ -328,7 +322,7 @@ export class Contacts{
             }
             const response = await targetHubspot.crm.associations.v4.batchApi.archive("0-1", "0-2", batchInput)
 
-            console.log("step 5", response)
+            //console.log("step 5", response)
 
             console.log("Association succesfully deleted")
 

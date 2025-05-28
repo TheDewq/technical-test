@@ -3,15 +3,16 @@ import hubspot from "@hubspot/api-client";
 
 export class Companies {
   static migrate(req, res) {
-    // send status to HubSpot
-    res.sendStatus(204)
-
+   
     const data = req.body[0];
 
     // verify if body isn't empty
     if (data == null) return res.status(400).json({ message: "missing data" });
 
-    console.log("Request type", data);
+    // send status to HubSpot
+    res.sendStatus(204)
+
+    console.log("Request type", data.subscriptionType);
 
     // Determine the subscription type to execute the corresponding function
     if (data.subscriptionType == "company.creation") {
