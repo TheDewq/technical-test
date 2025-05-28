@@ -34,11 +34,8 @@ export class Contacts{
     
             //contact properties
             const allProperties = ["firstname", "lastname", "character_id", "status_character","character_species","character_gender"];
-            const associations = ["companies"]
-    
-            const apiResponse = await originHubspotClient.crm.contacts.basicApi.getById(objId, allProperties, undefined, associations);
-
             
+            const apiResponse = await originHubspotClient.crm.contacts.basicApi.getById(objId, allProperties);
     
     
             //delete certain data
@@ -62,22 +59,10 @@ export class Contacts{
             //establish association between contact and company
 
 
-            //get company id in target
-
-            const origin_company_id = apiResponse.associations.companies.results[0].id
-
-            //get origin company data
-
-            const companyHubspotClient = new hubspot.Client({"accessToken": KEYS.ORIGIN.COMPANIES.UPDATE})
-
-            const response = await companyHubspotClient.crm.companies.basicApi.getById(origin_company_id, ["name", "dimension", "creation_date", "location_type", "location_id"]);
-
-            const origin_company_properties = response.properties
-
-            console.log("origin_company_properties",origin_company_properties)
+           
 
             //make association
-            Contacts.makeAssociation()
+            Contacts.makeAssociation(objId, apiResponse2.id)
             
             
             
@@ -88,21 +73,77 @@ export class Contacts{
         }
     }
 
-    static async makeAssociation(ContactId, CompanyId){
+    static async makeAssociation(ContactId, TargetContactId = null){
+        console.log("Making association")
         //parametters verification
-        if(!CompanyId || !ContactId) throw new Error("Missing data in makeAssocciation method")
-
         try {
-            
-        hubspot.Client({"accessToken":KEYS.TARGET});
+        if(!ContactId) throw new Error("Missing data in makeAssocciation method")
+        
+        const originHubspotClient = new hubspot.Client({"accessToken":KEYS.ORIGIN.CONTACTS.CREATE})
+        
+        //get origin contact data
+
+        const associations = ["companies"]
+
+        const apiResponse = await originHubspotClient.crm.contacts.basicApi.getById(ContactId, undefined, undefined, associations);
+
+         //get company id in target
+
+        const origin_company_id = apiResponse.associations.companies.results[0].id
+
+        //get origin company data
+
+        const companyHubspotClient = new hubspot.Client({"accessToken": KEYS.ORIGIN.COMPANIES.UPDATE})
+
+        const response = await companyHubspotClient.crm.companies.basicApi.getById(origin_company_id, ["name", "dimension", "creation_date", "location_type", "location_id"]);
+
+        const origin_company_properties = response.properties
+
+        console.log("origin_company_properties",origin_company_properties)
+
+        //find id of company from target
+
+        const targetHubspotClient = new hubspot.Client({"accessToken": KEYS.TARGET})
+
+         const PublicObjectSearchRequest = {
+                filterGroups: [
+                    {
+                        filters:[
+                            {
+                                "propertyName": "location_id",
+                                "operator": "CONTAINS_TOKEN",
+                                "value": origin_company_properties.location_id
+                            }
+                        ]
+                    }
+                ]    
+            };
+
+        const response2 = await targetHubspotClient.crm.companies.searchApi.doSearch(PublicObjectSearchRequest)
+
+        const TargetCompanyId = response2.results[0].id
+
+        if(TargetContactId == null){
+            //ya va
+        }
 
         //contact is "from" and company is "to"
 
         const fromObjectType = "0-1"
         const toObjectType = "0-2"
 
+        const AssociationSpec = [
+            {
+                "associationCategory": "HUBSPOT_DEFINED",
+                "associationTypeId": 1
+            }
+        ];
 
-        const apiResponse = await hubspotClient.crm.associations.v4.basicApi.create(fromObjectType, ContactId, toObjectType, CompanyId);
+        const apiResponse2 = await targetHubspotClient.crm.associations.v4.basicApi.create(fromObjectType, TargetContactId, toObjectType, TargetCompanyId, AssociationSpec);
+
+        console.log("final asociacion",apiResponse2)
+
+        console.log("Association made successfully")
 
         } catch (error) {
             throw error
