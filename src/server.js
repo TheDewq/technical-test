@@ -7,6 +7,8 @@ import morgan from "morgan"
 import { PORT } from "./utils/constants.js"
 import companiesRoutes from "./api/companies/routes/companies.routes.js"
 import contactsRoutes from "./api/contacts/routes/contacts.routes.js"
+import migrateLocations from "./api/rickAndMorty/routes/migrateLocations.routes.js"
+
 import cors from "cors"
 import dotenv from 'dotenv';
 
@@ -30,3 +32,5 @@ console.info("SERVER ON PORT "+PORT)
 app.use("/companies", companiesRoutes)
 
 app.use("/contacts", contactsRoutes)
+
+app.use("/migrate_locations", migrateLocations)
